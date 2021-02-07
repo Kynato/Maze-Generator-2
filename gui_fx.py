@@ -1,5 +1,8 @@
 import pygame
 from pygame.locals import *
+from maze import *
+from maze_cell import *
+import random as rd
 
 
 class GUI:
@@ -19,6 +22,54 @@ class GUI:
         self.screen = pygame.display.set_mode((w, h))
         # Background color
         self.screen.fill(self.backgroundColor)
+
+    def RandomColor(self):
+        lower_bound = 100
+        upper_bound = 200
+
+        return rd.randint(lower_bound, upper_bound), rd.randint(lower_bound, upper_bound), rd.randint(lower_bound, upper_bound)
+
+    def DrawCell(self, c:Cell, position_x, position_y, cell_size, wall_thickness):
+
+        r, g, b = self.RandomColor()
+        rand_color = (r,g,b)
+
+        wall_color = (120, 20, 50)
+        floor_color = (20, 20, 20)
+
+        floor_color = pygame.Color('0x000000')
+        wall_color = pygame.Color('0x697dd1')
+        bedrock_color = (0,0,0)
+
+        # Draw boundaries (background of cell)
+        if c.IsBedrock():
+            pygame.draw.rect(self.screen, bedrock_color, pygame.Rect(position_x, position_y, cell_size, cell_size))
+        else:
+            pygame.draw.rect(self.screen, floor_color, pygame.Rect(position_x, position_y, cell_size, cell_size))
+            # Draw walls around the cell
+            if 'up' in c.walls:
+                pygame.draw.rect(self.screen, wall_color, pygame.Rect(position_x, position_y, cell_size, wall_thickness))
+            if 'left' in c.walls:
+                pygame.draw.rect(self.screen, wall_color, pygame.Rect(position_x, position_y, wall_thickness, cell_size))
+            if 'down' in c.walls:
+                pygame.draw.rect(self.screen, wall_color, pygame.Rect(position_x, position_y+cell_size-wall_thickness+1, cell_size, wall_thickness))
+            if 'right' in c.walls:
+                pygame.draw.rect(self.screen, wall_color, pygame.Rect(position_x+cell_size-wall_thickness+1, position_y, wall_thickness, cell_size))
+            
+        
+        
+
+    def DrawMaze(self, m:Maze):
+        cell_count = max(m.h_cells, m.v_cells)
+        cell_size = self.height/cell_count
+        wall_thickness = cell_size*0.05
+
+        for row in range(m.v_cells):
+            for col in range(m.h_cells):
+                self.DrawCell(m.table[row][col], col*cell_size, row*cell_size, cell_size, wall_thickness)
+
+
+    
 
     def generateBackground(self):
         boxSpacing = self.width/9
