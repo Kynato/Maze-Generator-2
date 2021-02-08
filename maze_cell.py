@@ -40,6 +40,7 @@ class Cell:
     def __init__(self):
         self.bedrock = False #name originates from minecraft
         self.options = ['up', 'down', 'left', 'right']
+        self.visited = False
         self.walls = {
         'up': Direction('up'), 
         'down': Direction('down'), 
@@ -49,10 +50,13 @@ class Cell:
 
     def PickDirection(self):
         pick = rd.choice(self.options)
-        self.options.remove(pick)
-        del self.walls[pick]
+        self.visited = True
 
         return pick
+
+    def PopDirection(self, dir):
+        self.options.remove(dir)
+        del self.walls[dir]
 
     def IsBedrock(self):
         if (self.bedrock):

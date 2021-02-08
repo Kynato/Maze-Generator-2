@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from maze import *
+from maze import Maze
 from maze_cell import *
 import random as rd
 
@@ -56,8 +56,6 @@ class GUI:
             if 'right' in c.walls:
                 pygame.draw.rect(self.screen, wall_color, pygame.Rect(position_x+cell_size-wall_thickness+1, position_y, wall_thickness, cell_size))
             
-        
-        
 
     def DrawMaze(self, m:Maze):
         cell_count = max(m.h_cells, m.v_cells)
@@ -68,7 +66,10 @@ class GUI:
             for col in range(m.h_cells):
                 self.DrawCell(m.table[row][col], col*cell_size, row*cell_size, cell_size, wall_thickness)
 
-
+    # ================================================
+    # ALL BELOW IS TRASH FROM OTHER PROJECT
+    # IT IS HERE IN CASE I NEED IT IN NEAR FUTURE
+    # PLEASE DELETE BEFORE RELEASE
     
 
     def generateBackground(self):
