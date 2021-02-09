@@ -18,6 +18,9 @@ class Point:
         else:
             print('Point travel exploded. Please check that.')
 
+    def GetVector(self, scale, offset):
+        return (self.col * scale + offset, self.row * scale + offset)
+
 def OpositeDir(dir):
     if dir == 'up':
         return 'down'
@@ -28,18 +31,28 @@ def OpositeDir(dir):
     elif dir == 'left':
         return 'right'
 
+
+
 class Maze:
 
-    def __init__(self, horizontal_cells, vertical_cells):
+    def __init__(self, horizontal_cells, vertical_cells, start:Point = None, finish:Point=None):
         # variables
         self.h_cells = horizontal_cells
         self.v_cells = vertical_cells
         self.table = []
         self.stack = deque()
-        self.starting_point = Point(1, 1)
+        self.starting_point = Point(1,1)
+        if start!=None:
+            self.starting_point = start
+        self.finishing_point = Point(vertical_cells-2,horizontal_cells-2)
+        if finish!=None:
+            self.finishing_point = finish
+
         self.path = deque()
+        self.path_found = False
 
         self.stack.append(self.starting_point)
+        self.path.append(self.starting_point)
         
         # create table of cells
         for i in range(vertical_cells):
@@ -96,12 +109,19 @@ class Maze:
     # This will break the walls in the freshly created maze
     def BreakWalls(self):
         top = self.stack[-1]
+
+        if self.path_found == False:
+            self.path = deque(self.stack)
+
+        if top.row == self.finishing_point.row and top.col == self.finishing_point.col:
+            self.path_found = True
+            # copy by value, not by reference
+            self.path = deque(self.stack)
+
         self.table[top.row][top.col].visited = True
         c = self.table[top.row][top.col]
-        
-        #print('vis neigh: ' + str(self.VisitedNeighbours(top.row, top.col)))
 
-
+        #delete this?
         if c.IsBedrock():
             print('Cell is bedrock. This shouldnt happen.')
 

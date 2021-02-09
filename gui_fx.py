@@ -1,7 +1,7 @@
 import pygame
-from pygame.locals import *
+import pygame.gfxdraw
 from maze import Maze
-from maze_cell import *
+from maze_cell import Cell
 import random as rd
 
 
@@ -22,6 +22,8 @@ class GUI:
         self.screen = pygame.display.set_mode((w, h))
         # Background color
         self.screen.fill(self.backgroundColor)
+
+        pygame.display.update()
 
     def RandomColor(self):
         lower_bound = 100
@@ -65,6 +67,27 @@ class GUI:
         for row in range(m.v_cells):
             for col in range(m.h_cells):
                 self.DrawCell(m.table[row][col], col*cell_size, row*cell_size, cell_size, wall_thickness)
+
+    def DrawPath(self, m:Maze):
+        if len(m.path) < 2:
+            return
+        cell_count = max(m.h_cells, m.v_cells)
+        cell_size = self.height/cell_count
+        offset = cell_size/2
+        path_thickness = int(cell_size*0.2)
+
+        path_color = pygame.Color('0xc4a231')
+
+        points = list(map(lambda v: v.GetVector(cell_size, offset), m.path))
+        pygame.draw.lines(self.screen, path_color, False, points, path_thickness)
+        #pygame.draw.aalines(self.screen, path_color, False, points)
+        #pygame.gfxdraw.bezier(self.screen, points, 10, path_color)
+
+        
+
+
+
+
 
     # ================================================
     # ALL BELOW IS TRASH FROM OTHER PROJECT
